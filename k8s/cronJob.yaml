@@ -1,0 +1,47 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: tobs-oncall-highlights-930
+  namespace: tobs-oncall-highlights-testing
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: tobs-oncall-highlights
+            image: tobs-oncall-highlights:v2.0
+            imagePullPolicy: Always
+            env:
+            - name: SLACK_COLOR
+              #value: '#00FF00'
+              value: '#439FE0'
+            - name: SLACK_BOT_TOKEN_LEGACY
+              valueFrom:
+                secretKeyRef:
+                  name: tobs-oncall-highlights-secrets
+                  key: SLACK_BOT_TOKEN_LEGACY
+            - name: MON_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: tobs-oncall-highlights-secrets
+                  key: MON_API_TOKEN
+            - name: PAGERDUTY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: tobs-oncall-highlights-secrets
+                  key: PAGERDUTY_TOKEN
+            - name: JIRA_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: tobs-oncall-highlights-secrets
+                  key: JIRA_TOKEN
+            - name: SLACK_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: tobs-oncall-highlights-secrets
+                  key: SLACK_BOT_TOKEN
+            - name: SLACK_CHANNEL_ID
+              value: 'channel_id'
+          restartPolicy: OnFailure
